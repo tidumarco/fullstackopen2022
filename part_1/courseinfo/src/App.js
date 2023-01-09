@@ -1,28 +1,84 @@
-import Header from "./components/Header";
-import Content from "./components/Content";
+import Course from "./components/Course";
 import Total from "./components/Total";
+
 const App = () => {
-  const course = "Half Stack application development";
-  const parts = [
+  const courses = [
     {
-      name: "Fundamentals of React",
-      exercises: 10,
+      name: "Half Stack application development",
+      id: 1,
+      parts: [
+        {
+          name: "Fundamentals of React",
+          exercises: 10,
+          id: 1,
+        },
+        {
+          name: "Using props to pass data",
+          exercises: 7,
+          id: 2,
+        },
+        {
+          name: "State of a component",
+          exercises: 14,
+          id: 3,
+        },
+        {
+          name: "Redux",
+          exercises: 11,
+          id: 4,
+        },
+      ],
     },
     {
-      name: "Using props to pass data",
-      exercises: 7,
-    },
-    {
-      name: "State of a component",
-      exercises: 14,
+      name: "Node.js",
+      id: 2,
+      parts: [
+        {
+          name: "Routing",
+          exercises: 3,
+          id: 1,
+        },
+        {
+          name: "Middlewares",
+          exercises: 7,
+          id: 2,
+        },
+      ],
     },
   ];
+  const exercises = courses.map((course) => {
+    return course.parts.map((part) => part.exercises);
+  });
 
+  const initialValue = 0;
+  const count = exercises.map((x) =>
+    x.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      initialValue
+    )
+  );
+
+  const total = count.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    initialValue
+  );
+
+  console.log("count", count);
   return (
     <div>
-      <Header course={course} />
-      <Content parts={parts} />
-      <Total parts={parts} />
+      {courses.map((course) => (
+        <>
+          <h1>{course.name}</h1>
+          {course.parts.map((parts) => (
+            <Course
+              key={parts.id}
+              name={parts.name}
+              exercises={parts.exercises}
+            />
+          ))}
+        </>
+      ))}
+      <Total count={total} />
     </div>
   );
 };
