@@ -10,7 +10,6 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState({ query: "", list: [] });
-  const allPersons = personService.getAll().then((response) => response.data);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -18,34 +17,54 @@ const App = () => {
     });
   }, []);
 
-  console.log(allPersons);
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = {
       name: newName,
       number: newNumber,
     };
+    const person = persons.filter((person) => person.name === newName);
 
-    const changedPerson = { ...personObject, number: newNumber };
+    const personToAdd = person[0];
+    const updatedPerson = { ...personToAdd, number: newNumber };
+    // personService.create(personObject).then((returnedPerson) => {
+    // 	setPersons(persons.concat(returnedPerson));
+    // 	setNewName("");
+    // 	setNewNumber("");
+    //   });
 
-    for (let i = 0; i < persons.length; i++) {
-      if (persons[i].name.includes(newName)) {
-        alert(
-          `${newName} is already in the phonebook, replace the old number with a new one?`
-        );
+    if (person.length !== 0) {
+      if (
+        window.confirm(
+          `${personToAdd.name} is already added to the phonebook, replace the old number with a new one ?`
+        )
+      ) {
+        personService
+          .update(updatedPerson.id, updatedPerson)
+          .then((returnedPerson) => {
+            console.log(`${returnedPerson.name} successfully updated!`);
+            setPersons(
+              persons.map((personItem) =>
+                personItem.id !== personToAdd.id ? personItem : returnedPerson
+              )
+            );
+            setNewName("");
+            setNewNumber("");
+          });
       }
+    } else {
+      personService.create(personObject).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      });
     }
-    personService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
-    });
   };
 
   const deletePerson = (id) => {
     const personId = persons.find((person) => person.id === id);
     const deletedPerson = { ...personId };
-	const updatedPersons = persons.filter((person) => person.id !== id)
+    const updatedPersons = persons.filter((person) => person.id !== id);
     personService.deletePerson(deletedPerson.id);
     setPersons([...updatedPersons]);
   };
