@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-
+import Notification from "./components/Notification";
 import personService from "./services/persons";
 
 const App = () => {
@@ -10,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState({ query: "", list: [] });
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -27,11 +28,6 @@ const App = () => {
 
     const personToAdd = person[0];
     const updatedPerson = { ...personToAdd, number: newNumber };
-    // personService.create(personObject).then((returnedPerson) => {
-    // 	setPersons(persons.concat(returnedPerson));
-    // 	setNewName("");
-    // 	setNewNumber("");
-    //   });
 
     if (person.length !== 0) {
       if (
@@ -42,7 +38,7 @@ const App = () => {
         personService
           .update(updatedPerson.id, updatedPerson)
           .then((returnedPerson) => {
-            console.log(`${returnedPerson.name} successfully updated!`);
+            setMessage(`${returnedPerson.name} successfully updated!`);
             setPersons(
               persons.map((personItem) =>
                 personItem.id !== personToAdd.id ? personItem : returnedPerson
@@ -50,13 +46,28 @@ const App = () => {
             );
             setNewName("");
             setNewNumber("");
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
+          })
+          .catch((error) => {
+			console.log(`${updatedPerson.name} already deleted from the server!`)
+            setMessage(
+              `${updatedPerson.name} already deleted from the server!`
+            );
           });
       }
     } else {
       personService.create(personObject).then((returnedPerson) => {
+        setMessage(
+          `${returnedPerson.name} successfully added to the phonebook!`
+        );
         setPersons(persons.concat(returnedPerson));
         setNewName("");
         setNewNumber("");
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       });
     }
   };
@@ -66,6 +77,12 @@ const App = () => {
     const deletedPerson = { ...personId };
     const updatedPersons = persons.filter((person) => person.id !== id);
     personService.deletePerson(deletedPerson.id);
+    setMessage(
+      `${deletedPerson.name} successfully deleted from the phonebook!`
+    );
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
     setPersons([...updatedPersons]);
   };
 
@@ -90,6 +107,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <h3>Search a person:</h3>
       <Filter filter={filter} handleChange={handleChange} />
       <h3>Add a new person</h3>
@@ -101,7 +119,12 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons filter={filter} persons={persons} deletePerson={deletePerson} />
+      <Persons
+        className="persons"
+        filter={filter}
+        persons={persons}
+        deletePerson={deletePerson}
+      />
     </div>
   );
 };
