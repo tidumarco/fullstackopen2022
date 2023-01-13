@@ -81,7 +81,6 @@ const App = () => {
             <li>{weather.descr}</li>
             <li>temperature {C.toFixed(2)} ° Celsius</li>
           </ul>
-          <div></div>
         </>
       ) : (
         ""

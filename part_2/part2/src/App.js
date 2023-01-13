@@ -17,14 +17,23 @@ const App = () => {
   }, []);
 
   const toggleImportanceOf = (id) => {
-    const note = notes.find((n) => n.id === id);
-    const changedNote = { ...note, important: !note.important };
+    const note = notes.filter((n) => n.id === id);
+
+    const noteToChange = note[0];
+    const updatedNote = { ...noteToChange, important: !noteToChange.important };
 
     noteService
-      .update(id, changedNote)
+      .update(id, updatedNote)
       .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+        console.log("Returned note", returnedNote);
+        setNotes(
+          notes.map((noteItem) => {
+           console.log(noteItem)
+            // noteItem.id !== noteToChange.id ? noteItem : returnedNote;
+          })
+        );
       })
+
       .catch((error) => {
         setErrorMessage(
           `Note '${note.content}' was already removed from server`
@@ -32,7 +41,6 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000);
-        setNotes(notes.filter((n) => n.id !== id));
       });
   };
 

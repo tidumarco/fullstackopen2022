@@ -1,17 +1,17 @@
-const Persons = ({ filter, persons, deletePerson }) => {
+const Persons = ({ search, persons, deletePerson, newPersons }) => {
   return (
     <ul>
-      {filter.query === ""
+      {search === ""
         ? persons.map((person) => (
             <li key={person.id}>
               {person.name} {person.number}{" "}
               <button onClick={() => deletePerson(person.id)}>Delete</button>
             </li>
           ))
-        : filter.list.map((person) => (
+        : newPersons.map((person) => (
             <li key={person.id}>
               {person.name} {person.number}{" "}
-              <button onClick={deletePerson(person.id)}>Delete</button>
+              <button onClick={() => deletePerson(person.id)}>Delete</button>
             </li>
           ))}
     </ul>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Filter from "./components/Filter";
+import Search from "./components/Search";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import Notification from "./components/Notification";
@@ -9,7 +9,8 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [filter, setFilter] = useState({ query: "", list: [] });
+  const [search, setSearch] = useState("");
+  const [newPersons, setNewPersons] = useState([]);
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
@@ -51,10 +52,15 @@ const App = () => {
             }, 5000);
           })
           .catch((error) => {
-			console.log(`${updatedPerson.name} already deleted from the server!`)
+            console.log(
+              `${updatedPerson.name} already deleted from the server!`
+            );
             setMessage(
               `${updatedPerson.name} already deleted from the server!`
             );
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
           });
       }
     } else {
@@ -92,16 +98,20 @@ const App = () => {
   };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value);
     setNewNumber(event.target.value);
   };
 
-  const handleChange = (e) => {
-    const results = persons.filter((person) => {
-      if (e.target.value === "") return persons;
-      return person.name.toLowerCase().includes(e.target.value.toLowerCase());
+  const handleFilterChange = (event) => {
+    const query = event.target.value;
+    let results;
+    console.log(query);
+
+    results = persons.filter((person) => {
+      return person.name.toLowerCase().includes(query.toLowerCase());
     });
-    setFilter({ query: e.target.value, list: results });
+    setSearch(query);
+    setNewPersons(results);
+	console.log("newPersons", newPersons)
   };
 
   return (
@@ -109,7 +119,9 @@ const App = () => {
       <h2>Phonebook</h2>
       <Notification message={message} />
       <h3>Search a person:</h3>
-      <Filter filter={filter} handleChange={handleChange} />
+
+      <Search search={search} handleChange={handleFilterChange} />
+
       <h3>Add a new person</h3>
       <PersonForm
         addPerson={addPerson}
@@ -121,9 +133,10 @@ const App = () => {
       <h2>Numbers</h2>
       <Persons
         className="persons"
-        filter={filter}
+        search={search}
         persons={persons}
         deletePerson={deletePerson}
+        newPersons={newPersons}
       />
     </div>
   );

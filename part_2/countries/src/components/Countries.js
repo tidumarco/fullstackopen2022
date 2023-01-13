@@ -9,7 +9,7 @@ const Countries = ({ filter, countries }) => {
     return <div>Too many results</div>;
   } else if (filter.list.length === 1) {
     return filter.list.map((country) => (
-      <div>
+      <div key={country.ccn3}>
         <h1>{country.name.common}</h1>
         <img
           src={country.flags.png}
