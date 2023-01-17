@@ -19,7 +19,7 @@ blogsRouter.get("/:id", (request, response) => {
     .catch((error) => next(error));
 });
 
-blogsRouter.post("/api/blogs", (request, response) => {
+blogsRouter.post("/", (request, response) => {
   const blog = new Blog(request.body);
 
   blog
