@@ -24,11 +24,12 @@ app.use(
   })
 );
 
-app.get("/api/persons", (request, response) => {
-  Person.find({}).then((persons) => {
-    response.json(persons);
-  })
-  .catch(error => next(error));
+app.get("/api/persons", (request, response, next) => {
+  Person.find({})
+    .then((persons) => {
+      response.json(persons);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
@@ -46,44 +47,48 @@ app.get("/api/persons/:id", (request, response, next) => {
     });
 });
 
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  Person.findByIdAndDelete(id).then((person) => {
-    response.json(person);
-  })
-  .catch(error => next(error));
+  Person.findByIdAndDelete(id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
-
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "name or number missing",
-    });
-  }
-
-  //   if (persons.find((person) => person.name === body.name)) {
-  //     return response.status(400).json({
-  //       error: "name already in database",
-  //     });
-  //   }
   const person = new Person({
     name: body.name,
     number: body.number,
-    // id: generateId(),
   });
+  if (person.name.length < 3) {
+    return response.status(400).json({
+      error: `${body.name} is shorter than the minimum allowed length (3).`,
+    });
+  }
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
-app.put("/api/persons/:id", (request, response) => {
+app.put("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   const body = request.body;
+
+  if (body.number.toString().length <= 8) {
+    return response
+      .status(400)
+      .json({ error: "The phone number is too short." });
+  }
+
   Person.findByIdAndUpdate(id, body, {
     new: true,
+    runValidators: true,
   })
     .then((person) => {
       response.json(person);
@@ -102,6 +107,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
