@@ -63,7 +63,6 @@ const App = () => {
     initialValue
   );
 
-  console.log("count", count);
   return (
     <div>
       {courses.map((course) => (
