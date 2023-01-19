@@ -4,42 +4,42 @@ import Total from "./components/Total";
 const App = () => {
   const courses = [
     {
-      name: "Half Stack application development",
+      name: "Web Development Fundamentals",
       id: 1,
-      parts: [
+      modules: [
         {
-          name: "Fundamentals of React",
+          name: "HTML and CSS",
           exercises: 10,
           id: 1,
         },
         {
-          name: "Using props to pass data",
+          name: "JavaScript Basics",
           exercises: 7,
           id: 2,
         },
         {
-          name: "State of a component",
+          name: "React Fundamentals",
           exercises: 14,
           id: 3,
         },
         {
-          name: "Redux",
+          name: "Node.js",
           exercises: 11,
           id: 4,
         },
       ],
     },
     {
-      name: "Node.js",
+      name: "Data Science",
       id: 2,
-      parts: [
+      modules: [
         {
-          name: "Routing",
+          name: "Python Fundamentals",
           exercises: 3,
           id: 1,
         },
         {
-          name: "Middlewares",
+          name: "Machine Learning",
           exercises: 7,
           id: 2,
         },
@@ -47,7 +47,7 @@ const App = () => {
     },
   ];
   const exercises = courses.map((course) => {
-    return course.parts.map((part) => part.exercises);
+    return course.modules.map((module) => module.exercises);
   });
 
   const initialValue = 0;
@@ -66,16 +66,16 @@ const App = () => {
   return (
     <div>
       {courses.map((course) => (
-        <>
+        <div key={course.id}>
           <h1>{course.name}</h1>
-          {course.parts.map((parts) => (
+          {course.modules.map((module) => (
             <Course
-              key={parts.id}
-              name={parts.name}
-              exercises={parts.exercises}
+              key={module.name}
+              name={module.name}
+              exercises={module.exercises}
             />
           ))}
-        </>
+        </div>
       ))}
       <Total count={total} />
     </div>

@@ -1,6 +1,6 @@
-const Course = ({ name, exercises, key }) => {
+const Course = ({ name, exercises, id }) => {
   return (
-    <li key={key}>
+    <li key={id}>
       {name}: {exercises} exercises
     </li>
   );
