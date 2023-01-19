@@ -3,7 +3,7 @@ import { useState } from "react";
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
 const Anecdote = ({ winner, winCount }) => {
-  if (winCount == 0) {
+  if (winCount === 0) {
     return <p>No winner yet</p>;
   }
   return (
@@ -39,7 +39,7 @@ const App = (props) => {
   ];
 
   const [selected, setSelected] = useState(0);
-  const [votes, setVotes] = useState(Array(6).fill(0));
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);

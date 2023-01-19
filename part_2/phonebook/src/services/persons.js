@@ -17,9 +17,10 @@ const deletePerson = (id) => {
 };
 
 const update = (id, newObject) => {
-	const request = axios.put(`${baseUrl}/${id}`, newObject);
-	return request.then((response) => response.data);
-  };
+  const request = axios.put(`${baseUrl}/${id}`, newObject);
+  console.log("Request from update", request);
+  return request.then((response) => response.data);
+};
 
 export default {
   getAll: getAll,

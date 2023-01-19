@@ -16,39 +16,13 @@ const App = () => {
     });
   }, []);
 
-  const toggleImportanceOf = (id) => {
-    const note = notes.filter((n) => n.id === id);
-
-    const noteToChange = note[0];
-    const updatedNote = { ...noteToChange, important: !noteToChange.important };
-
-    noteService
-      .update(id, updatedNote)
-      .then((returnedNote) => {
-        console.log("Returned note", returnedNote);
-        setNotes(
-          notes.map((noteItem) => {
-           console.log(noteItem)
-            // noteItem.id !== noteToChange.id ? noteItem : returnedNote;
-          })
-        );
-      })
-
-      .catch((error) => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
-        );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      });
-  };
-
   const addNote = (event) => {
     event.preventDefault();
     const noteObject = {
       content: newNote,
+      date: new Date().toISOString(),
       important: Math.random() > 0.5,
+      id: notes.length + 1,
     };
 
     noteService.create(noteObject).then((returnedNote) => {
@@ -61,9 +35,28 @@ const App = () => {
     setNewNote(event.target.value);
   };
 
-  const notesToShow = showAll
-    ? notes
-    : notes.filter((note) => note.important === true);
+  const toggleImportanceOf = (id) => {
+    const note = notes.find((n) => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    noteService
+      .update(id, changedNote)
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+      })
+
+      .catch((error) => {
+        setErrorMessage(
+          `Note '${note.content}' was already removed from server`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+        setNotes(notes.filter((n) => n.id !== id));
+      });
+  };
+
+  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   return (
     <div>
