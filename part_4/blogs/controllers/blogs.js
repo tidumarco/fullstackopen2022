@@ -38,14 +38,19 @@ blogsRouter.delete("/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-blogsRouter.put("/:id", (request, response, next) => {
-  const blog = new Blog(request.body);
+blogsRouter.put("/:id", async (request, response, next) => {
+  const id = request.params.id;
+  const body = request.body;
 
-  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    .then((updatedNote) => {
-      response.json(updatedNote);
-    })
-    .catch((error) => next(error));
+  const blog = {
+    ...body,
+    likes: body.likes,
+  };
+
+  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, {
+    new: true,
+  });
+  response.json(updatedBlog);
 });
 
 module.exports = blogsRouter;
