@@ -20,7 +20,9 @@ const App = () => {
   const [formVisible, setFormVisible] = useState(false);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
   }, []);
 
   useEffect(() => {
@@ -130,6 +132,15 @@ const App = () => {
     );
   };
 
+  const increaseLikes = (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    const likes = blog.likes + 1;
+    const newBlog = { ...blog, likes };
+    blogService.update(blog.id, newBlog).then((returnedBlog) => {
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+    });
+  };
+
   if (user === null) {
     return (
       <div>
@@ -148,10 +159,16 @@ const App = () => {
     return (
       <div>
         <Notification message={message} />
+
         <button onClick={handleLogout}>Logout</button>
         <h2>Blogs</h2>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            increaseLikes={increaseLikes}
+            deleteBlog={deleteBlog}
+          />
         ))}
 
         {user !== null && blogForm()}

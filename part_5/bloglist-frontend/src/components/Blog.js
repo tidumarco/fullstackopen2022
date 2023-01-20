@@ -1,8 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, deleteBlog }) => {
+const Blog = ({ blog, increaseLikes, deleteBlog }) => {
   const [visible, setVisible] = useState(false);
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -23,10 +24,13 @@ const Blog = ({ blog, deleteBlog }) => {
     return (
       <div className="blog" style={blogStyle}>
         <ul>
-          <li>{blog.title}</li>
-          <li>{blog.author}</li>
-          <li>{blog.url}</li>
-          <li>{blog.likes}</li>
+          <li>Title: {blog.title}</li>
+          <li>Blog Author:{blog.author}</li>
+          <li>Url: {blog.url}</li>
+          <li>
+            Likes: {blog.likes}
+            <button onClick={() => increaseLikes(blog.id)}>like</button>
+          </li>
           <button onClick={() => setVisible(false)}>back</button>
           <button onClick={() => deleteBlog(blog.id)}>delete</button>
         </ul>
