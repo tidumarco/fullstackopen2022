@@ -13,7 +13,7 @@ const Blog = ({ blog, deleteBlog }) => {
 
   if (!visible) {
     return (
-      <div style={blogStyle}>
+      <div className="blog" style={blogStyle}>
         {blog.title} {blog.author}
         <button onClick={() => setVisible(true)}>view details</button>
         <button onClick={() => deleteBlog(blog.id)}>delete</button>
@@ -21,7 +21,7 @@ const Blog = ({ blog, deleteBlog }) => {
     );
   } else {
     return (
-      <div style={blogStyle}>
+      <div className="blog" style={blogStyle}>
         <ul>
           <li>{blog.title}</li>
           <li>{blog.author}</li>
