@@ -1,8 +1,8 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const Blog = ({ blog, deleteBlog }) => {
   const [visible, setVisible] = useState(false);
-  console.log("BLOG ID FROM BLOG COMPONENT", blog.id);
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -33,6 +33,10 @@ const Blog = ({ blog, deleteBlog }) => {
       </div>
     );
   }
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
 };
 
 export default Blog;
