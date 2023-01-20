@@ -1,10 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axios from "axios";
-// const baseUrl = "/api/notes";
+const baseUrl = "/api/blogs";
 
 let token = null;
-
-const baseUrl = "http://localhost:3001/api/notes";
 
 const setToken = (newToken) => {
   token = `bearer ${newToken}`;
@@ -14,7 +12,6 @@ const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => response.data);
 };
-
 const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
@@ -29,9 +26,4 @@ const update = (id, newObject) => {
   return request.then((response) => response.data);
 };
 
-export default {
-  getAll: getAll,
-  create: create,
-  update: update,
-  setToken: setToken,
-};
+export default { getAll, create, update, setToken };
