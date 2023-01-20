@@ -17,6 +17,7 @@ const App = () => {
   const [message, setMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [formVisible, setFormVisible] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -79,6 +80,22 @@ const App = () => {
     });
   };
 
+  const deleteBlog = (id) => {
+    const blogId = blogs.find((blog) => blog.id === id);
+    const blogToDelete = { ...blogId };
+    const updatedBlogs = blogs.filter((blog) => blog.id !== id);
+    if (window.confirm(`Do you want to delete ${blogToDelete.title}?`)) {
+      blogService.deleteBlog(blogToDelete.id);
+      setMessage(
+        `${blogToDelete.title} successfully deleted from the phonebook!`
+      );
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+      setBlogs([...updatedBlogs]);
+    }
+  };
+
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
@@ -89,6 +106,28 @@ const App = () => {
 
   const handleURLChange = (event) => {
     setUrl(event.target.value);
+  };
+
+  const blogForm = () => {
+    const hideWhenVisible = { display: formVisible ? "none" : "" };
+    const showWhenVisible = { display: formVisible ? "" : "none" };
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setFormVisible(true)}>new blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <FormInputs
+            addBlog={addBlog}
+            handleTitleChange={handleTitleChange}
+            handleAuthorChange={handleAuthorChange}
+            handleURLChange={handleURLChange}
+          />
+          <button onClick={() => setFormVisible(false)}>cancel</button>
+        </div>
+      </div>
+    );
   };
 
   if (user === null) {
@@ -109,18 +148,14 @@ const App = () => {
     return (
       <div>
         <Notification message={message} />
-        <h2>blogs</h2>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
-        <h2>Create a new blog</h2>
-        <FormInputs
-          addBlog={addBlog}
-          handleTitleChange={handleTitleChange}
-          handleAuthorChange={handleAuthorChange}
-          handleURLChange={handleURLChange}
-        />
         <button onClick={handleLogout}>Logout</button>
+        <h2>Blogs</h2>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} />
+        ))}
+
+        {user !== null && blogForm()}
+        {user === null && ""}
       </div>
     );
   }
