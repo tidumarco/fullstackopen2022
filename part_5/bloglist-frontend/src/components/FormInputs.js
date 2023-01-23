@@ -10,13 +10,15 @@ function FormInputs({
   return (
     <>
       <h2>Create a new blog</h2>
-      <form onSubmit={addBlog}>
+      <form className="form" onSubmit={addBlog}>
         <label>
           Title:
           <input
+            className="title"
             type="text"
             name="title"
             value={title}
+            placeholder="title"
             onChange={handleTitleChange}
           />
         </label>
@@ -24,9 +26,11 @@ function FormInputs({
         <label>
           Author:
           <input
+            className="author"
             type="text"
             name="author"
             value={author}
+            placeholder="author"
             onChange={handleAuthorChange}
           />
         </label>
@@ -34,9 +38,11 @@ function FormInputs({
         <label>
           URL:
           <input
+            className="url"
             type="text"
             name="url"
             value={url}
+            placeholder="url"
             onChange={handleURLChange}
           />
         </label>

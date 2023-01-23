@@ -29,7 +29,12 @@ const Blog = ({ blog, increaseLikes, deleteBlog }) => {
           <li>Url: {blog.url}</li>
           <li>
             Likes: {blog.likes}
-            <button onClick={() => increaseLikes(blog.id)}>like</button>
+            <button
+              title="like-button"
+              onClick={() => increaseLikes(blog.id)}
+            >
+              like
+            </button>
           </li>
           <button onClick={() => setVisible(false)}>back</button>
           <button onClick={() => deleteBlog(blog.id)}>delete</button>
