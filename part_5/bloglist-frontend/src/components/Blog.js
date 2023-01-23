@@ -17,7 +17,9 @@ const Blog = ({ blog, increaseLikes, deleteBlog }) => {
       <div className="blog" style={blogStyle}>
         {blog.title} {blog.author}
         <button onClick={() => setVisible(true)}>view details</button>
-        <button onClick={() => deleteBlog(blog.id)}>delete</button>
+        <button id="delete" onClick={() => deleteBlog(blog.id)}>
+          delete
+        </button>
       </div>
     );
   } else {
@@ -29,10 +31,7 @@ const Blog = ({ blog, increaseLikes, deleteBlog }) => {
           <li>Url: {blog.url}</li>
           <li>
             Likes: {blog.likes}
-            <button
-              title="like-button"
-              onClick={() => increaseLikes(blog.id)}
-            >
+            <button title="like-button" onClick={() => increaseLikes(blog.id)}>
               like
             </button>
           </li>

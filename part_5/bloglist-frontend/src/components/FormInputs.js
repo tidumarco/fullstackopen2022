@@ -14,7 +14,7 @@ function FormInputs({
         <label>
           Title:
           <input
-            className="title"
+            id="title"
             type="text"
             name="title"
             value={title}
@@ -26,7 +26,7 @@ function FormInputs({
         <label>
           Author:
           <input
-            className="author"
+            id="author"
             type="text"
             name="author"
             value={author}
@@ -38,7 +38,7 @@ function FormInputs({
         <label>
           URL:
           <input
-            className="url"
+            id="url"
             type="text"
             name="url"
             value={url}
