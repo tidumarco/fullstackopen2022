@@ -70,33 +70,43 @@ let books = [
 let authors = [
   {
     name: "Rocky Van der Beek",
+    born: 1970,
   },
   {
     name: "Curr Handscomb",
+    born: 1978,
   },
   {
     name: "Buiron Boar",
+    born: 1980,
   },
   {
     name: "Easter Thornthwaite",
+    born: 1985,
   },
   {
     name: "Amargo Delleschi",
+    born: 1989,
   },
   {
     name: "Mack Cornillot",
+    born: 1990,
   },
   {
     name: "Delphinia Malsher",
+    born: 1991,
   },
   {
     name: "Shanan Ryott",
+    born: 1992,
   },
   {
     name: "Gael Maior",
+    born: 1993,
   },
   {
     name: "Jillian Wadeling",
+    born: 1994,
   },
 ];
 
@@ -110,13 +120,22 @@ const typeDefs = gql`
   type Author {
     name: String!
     bookCount: Int!
+    born: Int!
   }
-
   type Query {
     bookCount: Int!
     allBooks(author: String, genres: String): [Book!]!
     authorCount: Int!
     allAuthors: [Author!]!
+  }
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: String!
+    ): Book
+    editAuthor(name: String!, setBornTo: Int!): Author
   }
 `;
 
@@ -135,14 +154,34 @@ const resolvers = {
         );
       }
     },
-
     allAuthors: () => {
       return authors.map((author) => {
         return {
-          name: author.name,
+          ...author,
           bookCount: books.filter((book) => book.author === author.name).length,
         };
       });
+    },
+  },
+  Mutation: {
+    editAuthor: (root, args) => {
+      const author = authors.find((author) => author.name === args.name);
+      if (!author) {
+        return null;
+      }
+      author.born = args.setBornTo;
+      return author;
+    },
+    addBook: (root, args) => {
+      const authorExists = authors.some(
+        (author) => author.name === args.author
+      );
+      if (!authorExists) {
+        authors.push({ name: args.author });
+      }
+      const book = { ...args, id: uuid() };
+      books = books.concat(book);
+      return book;
     },
   },
 };
