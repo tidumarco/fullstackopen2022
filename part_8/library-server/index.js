@@ -97,6 +97,8 @@ const typeDefs = `
   type Query {
     bookCount: Int!
 	authorCount: Int!
+	allBooks: [Book!]!
+	allAuthors: [Author!]!
   }
 
   type Author {
@@ -105,13 +107,13 @@ const typeDefs = `
 	id: ID!
  }
 
- 	  type Book {
+  type Book {
 	title: String!
 	published: Int!
 	author: String!
 	id: ID!
 	genres: [String!]!
-	  }
+}
 	  
 `;
 
@@ -119,6 +121,8 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
+    allBooks: () => books,
+    allAuthors: () => authors,
   },
 };
 
