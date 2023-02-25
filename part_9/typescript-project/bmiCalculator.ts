@@ -1,3 +1,8 @@
+interface MultiplyValues {
+  value1: number;
+  value2: number;
+}
+
 const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / (height / 100) ** 2;
   switch (true) {
@@ -19,5 +24,19 @@ const calculateBmi = (height: number, weight: number): string => {
       return "Something went wrong";
   }
 };
+const parseArguments = (args: string[]): MultiplyValues => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+  if (args.length > 4) throw new Error("Too many arguments");
 
-console.log(calculateBmi(180, 74));
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      value1: Number(args[2]),
+      value2: Number(args[3]),
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
+  }
+};
+const height: number = Number(process.argv[2]);
+const weight: number = Number(process.argv[3]);
+console.log(calculateBmi(height, weight));
