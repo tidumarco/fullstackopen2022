@@ -8,11 +8,11 @@ interface Result {
   average: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   daily_exercises: Array<number>,
   target: number
 ): Result => {
-  const total = daily_exercises.reduce((a, b) => a + b);
+  //   const total = daily_exercises.reduce((a, b) => a + b);
   const average =
     daily_exercises.reduce((a, b) => a + b, 0) / daily_exercises.length;
   const success = average >= target;
@@ -39,10 +39,10 @@ const calculateExercises = (
   };
 };
 
-const parseArgumentsTwo = (
+export const parseArgumentsTwo = (
   args: Array<string>
 ): { dailyExercises: Array<number>; target: number } => {
-  if (args.length < 4) throw new Error("Not enough arguments");
+//   if (args.length < 4) throw new Error("Not enough arguments");
 
   const dailyExercises = args.slice(2, args.length - 1).map((arg) => {
     const exercise = Number(arg);
@@ -51,17 +51,16 @@ const parseArgumentsTwo = (
   });
 
   const target = Number(args[args.length - 1]);
-  if (isNaN(target)) throw new Error("Provided target value is not a number!");
-
+//   if (isNaN(target)) throw new Error("Provided target value is not a number!");
   return {
     dailyExercises,
     target,
   };
 };
 
-try {
-  const { dailyExercises, target } = parseArgumentsTwo(process.argv);
-  console.log(calculateExercises(dailyExercises, target));
-} catch (e) {
-  console.log("Error:", e.message);
-}
+// try {
+//   const { dailyExercises, target } = parseArgumentsTwo(process.argv);
+//   console.log(calculateExercises(dailyExercises, target));
+// } catch (e) {
+//   console.log("Error:", e.message);
+// }
