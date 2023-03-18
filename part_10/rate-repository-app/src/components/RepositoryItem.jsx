@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
   },
   flexContainer: {
     flexDirection: "row",
-    marginBottom: 15,
     justifyContent: "space-around",
   },
   columnContainer: {
