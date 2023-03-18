@@ -1,37 +1,106 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
+import Text from "./Text";
+import theme from "../theme";
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    backgroundColor: "white",
+    padding: 15,
   },
-  name: {
-    fontWeight: "bold",
-    fontSize: 16,
+  flexContainer: {
+    flexDirection: "row",
+    marginBottom: 15,
+    justifyContent: "space-around",
   },
-  description: {
-    color: "gray",
+  columnContainer: {
+    flexDirection: "column",
+    flexGrow: 1,
+    paddingLeft: 15,
   },
-  language: {
-    backgroundColor: "#0366d6",
-    color: "white",
-    borderRadius: 4,
-    padding: 4,
-    marginTop: 6,
+  languageContainer: {
+    backgroundColor: theme.colors.primary,
     alignSelf: "flex-start",
+    padding: 5,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  languageText: {
+    color: "white",
+  },
+  countText: {
+    marginTop: 5,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
   },
 });
 
 const RepositoryItem = ({ item }) => {
+  const {
+    fullName,
+    description,
+    language,
+    forksCount,
+    stargazersCount,
+    ratingAverage,
+    reviewCount,
+    ownerAvatarUrl,
+  } = item;
+
+  const formatCount = (count) => {
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}k`;
+    }
+    return count;
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{item.fullName}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-      <Text style={styles.language}>{item.language}</Text>
-      <Text>{`Stars: ${item.stargazersCount}`}</Text>
-      <Text>{`Forks: ${item.forksCount}`}</Text>
-      <Text>{`Reviews: ${item.reviewCount}`}</Text>
-      <Text>{`Rating: ${item.ratingAverage}`}</Text>
+      <View style={styles.flexContainer}>
+        <Image style={styles.avatar} source={{ uri: ownerAvatarUrl }} />
+        <View style={styles.columnContainer}>
+          <Text fontWeight="bold" fontSize="subheading">
+            {fullName}
+          </Text>
+
+          <Text color="textSecondary" numberOfLines={3}>
+            {description}
+          </Text>
+
+          <View style={styles.languageContainer}>
+            <Text style={styles.languageText}>{language}</Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.flexContainer}>
+        <View style={styles.columnContainer}>
+          <Text style={styles.countText} fontWeight="bold">
+            {formatCount(stargazersCount)}
+          </Text>
+          <Text color="textSecondary">Stars</Text>
+        </View>
+        <View style={styles.columnContainer}>
+          <Text style={styles.countText} fontWeight="bold">
+            {formatCount(forksCount)}
+          </Text>
+          <Text color="textSecondary">Forks</Text>
+        </View>
+        <View style={styles.columnContainer}>
+          <Text style={styles.countText} fontWeight="bold">
+            {ratingAverage}
+          </Text>
+          <Text color="textSecondary">Rating</Text>
+        </View>
+        <View style={styles.columnContainer}>
+          <Text style={styles.countText} fontWeight="bold">
+            {reviewCount}
+          </Text>
+          <Text color="textSecondary">Reviews</Text>
+        </View>
+      </View>
     </View>
   );
 };
