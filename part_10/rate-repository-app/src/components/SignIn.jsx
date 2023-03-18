@@ -1,10 +1,17 @@
 import { Formik } from "formik";
-import { StyleSheet, Pressable, TextInput, View } from "react-native";
+import FormikTextInput from "./FormikTextInput";
+import { StyleSheet, Pressable, View, Button } from "react-native";
 import Text from "./Text";
+import * as yup from "yup";
 
 const onSubmit = (values) => {
   console.log(values);
 };
+
+const validationSchema = yup.object().shape({
+  username: yup.string().required("Username is required"),
+  password: yup.string().required("Password is required"),
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -37,35 +44,26 @@ const SignIn = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={onSubmit}
+        validationSchema={validationSchema}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleSubmit }) => (
           <View>
-            <View style={styles.inputContainer}>
-              <TextInput
-                onChangeText={handleChange("username")}
-                onBlur={handleBlur("username")}
-                value={values.username}
-                placeholder="Username"
-                style={styles.input}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <TextInput
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-                placeholder="Password"
-                style={styles.input}
-                secureTextEntry
-              />
-            </View>
-            <Pressable onPress={handleSubmit} style={styles.button}>
-              <Text style={styles.buttonText}>Sign in</Text>
-            </Pressable>
+            <FormikTextInput
+              name="username"
+              placeholder="Username"
+              style={styles.input}
+            />
+            <FormikTextInput
+              name="password"
+              placeholder="Password"
+              secureTextEntry
+              style={styles.input}
+            />
+            <Button onPress={handleSubmit} title="Sign in" />
           </View>
         )}
       </Formik>
