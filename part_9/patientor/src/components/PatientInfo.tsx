@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Patient } from "../types";
+import { Patient, PatientInfoProps } from "../types";
 
-const PatientInfo = () => {
+const PatientInfo: React.FC<PatientInfoProps> = ({ diagnoses }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const { id } = useParams<{ id: string }>();
 
@@ -23,13 +23,21 @@ const PatientInfo = () => {
       <p>SSN: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
       <p>Date of birth: {patient.dateOfBirth}</p>
-      {/* <h3>Entries</h3>
+      <h3>Entries</h3>
       {patient.entries.map((entry) => (
         <div key={entry.id}>
           <p>Date: {entry.date}</p>
           <p>Description: {entry.description}</p>
+          <p>Specialist: {entry.specialist}</p>
+          <ul>
+            {entry.diagnosisCodes?.map((code) => (
+              <li key={code}>
+                {code} {diagnoses.find((d) => d.code === code)?.name}
+              </li>
+            ))}
+          </ul>
         </div>
-      ))} */}
+      ))}
     </div>
   );
 };
