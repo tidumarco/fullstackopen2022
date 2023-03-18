@@ -1,17 +1,10 @@
+export interface Entry {}
+
 export type Diagnose = {
   code: string;
   name: string;
   latin?: string;
 };
-
-// export type Patient = {
-// 	id: string;
-// 	name: string;
-// 	dateOfBirth: string;
-// 	gender: string;
-// 	occupation: string;
-// 	ssn: string;
-//   };
 
 export interface Patient {
   id: string;
@@ -20,6 +13,7 @@ export interface Patient {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[];
 }
 
 export enum Gender {
@@ -30,5 +24,6 @@ export enum Gender {
 
 export type PublicPatient = Pick<
   Patient,
-  "id" | "name" | "dateOfBirth" | "gender" | "occupation"
+  "id" | "name" | "dateOfBirth" | "gender" | "occupation" | "entries"
 >;
+export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;

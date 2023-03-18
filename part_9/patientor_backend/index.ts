@@ -25,6 +25,7 @@ app.get("/api/patients", (_req, res) => {
       dateOfBirth,
       gender,
       occupation,
+      entries: [],
     })
   );
 
@@ -42,6 +43,7 @@ app.post("/api/patients", (req, res) => {
       ssn,
       gender,
       occupation,
+      entries: [],
     };
 
     data2.push(newPatient); // adds new patient to data2 array
@@ -52,6 +54,15 @@ app.post("/api/patients", (req, res) => {
   }
 });
 
+app.get("/api/patients/:id", (req, res) => {
+  const id = req.params.id;
+  const patient = data2.find((p) => p.id === id);
+  if (!patient) {
+    res.status(404).send("Patient not found");
+  } else {
+    res.send(patient);
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
