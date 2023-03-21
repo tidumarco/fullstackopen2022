@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { NativeRouter } from "react-router-native";
 import font from "./font";
 import { ApolloProvider } from "@apollo/client";
+import Constants from "expo-constants";
 
 import Main from "./src/components/Main";
 import createApolloClient from "./src/utils/apolloClient";
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 function App() {
+  console.log(Constants.manifest.extra.env);
   return (
     <>
       <NativeRouter>
