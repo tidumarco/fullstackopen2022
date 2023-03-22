@@ -1,5 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, View, Pressable, ScrollView } from "react-native";
-import { Link } from "react-router-native";
+import { useApolloClient, useQuery } from "@apollo/client";
+import { Link, useNavigate } from "react-router-native";
+import React, { useState, useEffect } from "react";
+import { ME } from "../graphql/queries";
 import Text from "./Text";
 import Constants from "expo-constants";
 
@@ -20,7 +24,25 @@ const styles = StyleSheet.create({
   },
 });
 
+async function clearAsyncStorage() {
+  try {
+    await AsyncStorage.clear();
+  } catch (e) {
+    console.log("Failed to clear AsyncStorage:", e);
+  }
+}
+clearAsyncStorage();
+
 const AppBar = () => {
+  const { data } = useQuery(ME);
+  console.log("data", data);
+  const navigate = useNavigate();
+  const apolloClient = useApolloClient();
+  const handleSignOut = async () => {
+    await AsyncStorage.removeItem("auth:accessToken");
+    apolloClient.resetStore();
+    navigate("/", { replace: true });
+  };
   return (
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -29,11 +51,17 @@ const AppBar = () => {
             <Text style={styles.text}>Repositories</Text>
           </Link>
         </Pressable>
-        <Pressable style={{ paddingHorizontal: 10 }}>
-          <Link to="/signin">
-            <Text style={styles.text}>Sign in</Text>
-          </Link>
-        </Pressable>
+        {data && data.me ? (
+          <Pressable style={{ paddingHorizontal: 10 }} onPress={handleSignOut}>
+            <Text style={styles.text}>Sign out</Text>
+          </Pressable>
+        ) : (
+          <Pressable style={{ paddingHorizontal: 10 }}>
+            <Link to="/signin">
+              <Text style={styles.text}>Sign in</Text>
+            </Link>
+          </Pressable>
+        )}
       </ScrollView>
     </View>
   );
