@@ -5,11 +5,6 @@ import { useNavigate } from "react-router-native";
 import * as yup from "yup";
 import useSignIn from "../hooks/useSignIn";
 
-const initialValues = {
-  username: "",
-  password: "",
-};
-
 const validationSchema = yup.object().shape({
   username: yup.string().required("Username is required"),
   password: yup.string().required("Password is required"),
@@ -67,14 +62,20 @@ const SignIn = () => {
               name="username"
               placeholder="Username"
               style={styles.input}
+              testID="usernameField"
             />
             <FormikTextInput
               name="password"
               placeholder="Password"
               secureTextEntry
               style={styles.input}
+              testID="passwordField"
             />
-            <Button onPress={handleSubmit} title="Sign in" />
+            <Button
+              testID="submitButton"
+              onPress={handleSubmit}
+              title="Sign in"
+            />
           </View>
         )}
       </Formik>
