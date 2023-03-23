@@ -1,23 +1,89 @@
 import React from "react";
-import { Linking, Image, Pressable, Text, View } from "react-native";
+import {
+  Linking,
+  Image,
+  Pressable,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+} from "react-native";
 import { useParams } from "react-router-native";
-import styles from "../styles";
+// import styles from "../styles";
 import useRepository from "../hooks/useRepository";
+import useReviews from "../hooks/useReviews";
+import theme from "../theme";
 
-const SingleRepository = () => {
-  const { id } = useParams();
-  const { repository, loading, refetch } = useRepository(id);
-  console.log("id from component: ", id);
+const size = 50;
+const borderRadius = size / 2;
 
-  console.log("repository from component: ", repository);
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 15,
+  },
+  flexContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  columnContainer: {
+    flexDirection: "column",
+    flexGrow: 1,
+    paddingLeft: 15,
+  },
+  languageContainer: {
+    backgroundColor: theme.colors.primary,
+    alignSelf: "flex-start",
+    padding: 5,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  languageText: {
+    color: "white",
+  },
+  countText: {
+    marginTop: 5,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+  },
+  githubContainer: {
+    marginTop: 10,
+    flexDirection: "row",
+  },
+  githubText: {
+    color: "white",
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.roundness,
+    flexGrow: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    fontSize: 18,
+    textAlign: "center",
+  },
+  ratingContainer: {
+    width: size,
+    height: size,
+    borderRadius: borderRadius,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    color: theme.colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  separator: {
+    height: 10,
+  },
+  reviewContainer: {
+    color: theme.colors.primary,
+    fontSize: theme.fontSizes.subheading,
+    fontWeight: theme.fontWeights.bold,
+  },
+});
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!repository) {
-    return <p>No repository found</p>;
-  }
+const RepositoryInfo = ({ repository }) => {
   const handleOpenInGitHub = () => {
     Linking.openURL(repository.url);
   };
@@ -30,7 +96,7 @@ const SingleRepository = () => {
   };
 
   return (
-    <View testID="repositoryItem" style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.flexContainer}>
         <Image
           style={styles.avatar}
@@ -77,11 +143,69 @@ const SingleRepository = () => {
           </Text>
           <Text color="textSecondary">Reviews</Text>
         </View>
-        <Pressable style={styles.githubContainer} onPress={handleOpenInGitHub}>
-          <Text style={styles.githubText}>Open in GitHub</Text>
-        </Pressable>
+      </View>
+      <Pressable style={styles.githubContainer} onPress={handleOpenInGitHub}>
+        <Text style={styles.githubText}>Open in GitHub</Text>
+      </Pressable>
+    </View>
+  );
+};
+
+const ReviewItem = ({ review }) => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.ratingContainer}>
+        <Text style={styles.rating}>{review.rating}</Text>
+      </View>
+      <View style={styles.reviewContainer}>
+        <Text
+          fontWeight={styles.reviewContainer.fontWeight}
+          fontSize={styles.reviewContainer.fontSize}
+          font
+        >
+          {review.user.username}
+        </Text>
+        <Text>{review.createdAt}</Text>
+        <Text color="textSecondary" numberOfLines={3}>
+          {review.text}
+        </Text>
       </View>
     </View>
+  );
+};
+
+const SingleRepository = () => {
+  const { id } = useParams();
+  const { repository, loading: repositoryLoading } = useRepository(id);
+  const { reviews, loading: reviewsLoading } = useReviews(id);
+
+  if (repositoryLoading || reviewsLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!repository) {
+    return <p>Repository or reviews not found</p>;
+  }
+
+  const reviewsNodes = reviews ? reviews.edges.map((edge) => edge.node) : [];
+
+  const ItemSeparator = () => <View style={styles.separator} />;
+
+  return (
+    <>
+      <FlatList
+        data={reviewsNodes}
+        renderItem={({ item }) => <ReviewItem review={item} />}
+        keyExtractor={({ id }) => id}
+        ItemSeparatorComponent={ItemSeparator}
+        ListHeaderComponent={() => (
+          <>
+            <RepositoryInfo repository={repository} />
+            <View style={styles.separator} />
+          </>
+        )}
+      />
+    </>
   );
 };
 

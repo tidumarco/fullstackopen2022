@@ -2,6 +2,9 @@ import { StyleSheet } from "react-native";
 
 import theme from "./theme";
 
+const size = 50;
+const borderRadius = size / 2;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
@@ -47,6 +50,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 18,
     textAlign: "center",
+  },
+  ratingContainer: {
+    width: size,
+    height: size,
+    borderRadius: borderRadius,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    color: theme.colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  separator: {
+    height: 10,
+  },
+  reviewContainer: {
+    color: theme.colors.primary,
+    fontSize: theme.fontSizes.subheading,
+    fontWeight: theme.fontWeights.bold,
   },
 });
 
