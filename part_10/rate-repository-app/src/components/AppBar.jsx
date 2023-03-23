@@ -38,6 +38,7 @@ const AppBar = () => {
   console.log("data", data);
   const navigate = useNavigate();
   const apolloClient = useApolloClient();
+  
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("auth:accessToken");
     apolloClient.resetStore();
