@@ -74,6 +74,11 @@ const AppBar = () => {
                 <Text style={styles.text}>Create a review</Text>
               </Link>
             </Pressable>
+            <Pressable style={{ paddingHorizontal: 10 }}>
+              <Link to="/myreviews">
+                <Text style={styles.text}>My reviews</Text>
+              </Link>
+            </Pressable>
           </>
         ) : (
           <>

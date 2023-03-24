@@ -1,42 +1,54 @@
-import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import React, { useState } from "react";
+import { Dimensions, View } from "react-native";
+import { useDebounce } from "use-debounce";
+
 import useRepositories from "../hooks/useRepositories";
-import RepositoryItem from "./RepositoryItem";
-import { useNavigate } from "react-router-native";
-import styles from "../styles";
+import RepositoryListContainer from "./RepositoryListContainer";
+import SortList from "./SortList";
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
-export const RepositoryListContainer = ({ repositories }) => {
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
-
-  const navigate = useNavigate();
-
-  const handlePress = (id) => {
-    navigate(`/repository/${id}`);
-  };
-
-  const renderItem = ({ item }) => (
-    <Pressable onPress={() => handlePress(item.id)}>
-      <RepositoryItem item={item} />
-    </Pressable>
-  );
-
-  return (
-    <FlatList
-      data={repositoryNodes}
-      renderItem={renderItem}
-      ItemSeparatorComponent={ItemSeparator}
-      keyExtractor={(item) => item.id}
-    />
-  );
+const orderEnums = {
+  latest: { orderBy: "CREATED_AT" },
+  rating: { orderBy: "RATING_AVERAGE" },
+  up: { orderDirection: "ASC" },
+  down: { orderDirection: "DESC" },
 };
 
 const RepositoryList = () => {
-  const { repositories } = useRepositories();
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-  return <RepositoryListContainer repositories={repositories} />;
+  const [orderBy, setOrderBy] = useState({
+    ...orderEnums.latest,
+    ...orderEnums.up,
+  });
+
+  const [value] = useDebounce(searchKeyword, 500);
+
+  const query =
+    value && value.length > 0 ? { ...orderBy, searchKeyword: value } : orderBy;
+
+  const { repositories, fetchMore } = useRepositories({ first: 8, ...query });
+
+  const onEndReach = () => {
+    fetchMore();
+  };
+
+  return (
+    <View
+      style={{ height: Dimensions.get("window").height, paddingBottom: 105 }}
+    >
+      <SortList
+        setOrderBy={setOrderBy}
+        orderEnums={orderEnums}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+      />
+      <RepositoryListContainer
+        testID="repoList"
+        orderBy={orderBy}
+        repositories={repositories}
+        onEndReach={onEndReach}
+      />
+    </View>
+  );
 };
-
 export default RepositoryList;
