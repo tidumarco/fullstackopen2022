@@ -6,6 +6,7 @@ import React from "react";
 import { ME } from "../graphql/queries";
 import Text from "./Text";
 import Constants from "expo-constants";
+import SignUp from "./SignUp";
 
 const styles = StyleSheet.create({
   container: {
@@ -75,11 +76,18 @@ const AppBar = () => {
             </Pressable>
           </>
         ) : (
-          <Pressable style={{ paddingHorizontal: 10 }}>
-            <Link to="/signin">
-              <Text style={styles.text}>Sign in</Text>
-            </Link>
-          </Pressable>
+          <>
+            <Pressable style={{ paddingHorizontal: 10 }}>
+              <Link to="/signin">
+                <Text style={styles.text}>Sign in</Text>
+              </Link>
+            </Pressable>
+            <Pressable style={{ paddingHorizontal: 10 }}>
+              <Link to="/signup">
+                <Text style={styles.text}>Sign Up</Text>
+              </Link>
+            </Pressable>
+          </>
         )}
       </ScrollView>
     </View>
