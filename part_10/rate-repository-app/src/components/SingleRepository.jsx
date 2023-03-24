@@ -9,7 +9,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { useParams } from "react-router-native";
-// import styles from "../styles";
 import useRepository from "../hooks/useRepository";
 import useReviews from "../hooks/useReviews";
 import theme from "../theme";

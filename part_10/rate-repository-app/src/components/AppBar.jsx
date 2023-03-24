@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, View, Pressable, ScrollView } from "react-native";
 import { useApolloClient, useQuery } from "@apollo/client";
 import { Link, useNavigate } from "react-router-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ME } from "../graphql/queries";
 import Text from "./Text";
 import Constants from "expo-constants";
@@ -34,16 +34,24 @@ async function clearAsyncStorage() {
 clearAsyncStorage();
 
 const AppBar = () => {
-  const { data } = useQuery(ME);
-  console.log("data", data);
+  const { data, loading } = useQuery(ME);
+
   const navigate = useNavigate();
   const apolloClient = useApolloClient();
-  
+
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("auth:accessToken");
     apolloClient.resetStore();
     navigate("/", { replace: true });
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Loading...</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -53,9 +61,19 @@ const AppBar = () => {
           </Link>
         </Pressable>
         {data && data.me ? (
-          <Pressable style={{ paddingHorizontal: 10 }} onPress={handleSignOut}>
-            <Text style={styles.text}>Sign out</Text>
-          </Pressable>
+          <>
+            <Pressable
+              style={{ paddingHorizontal: 10 }}
+              onPress={handleSignOut}
+            >
+              <Text style={styles.text}>Sign out</Text>
+            </Pressable>
+            <Pressable style={{ paddingHorizontal: 10 }}>
+              <Link to="/review">
+                <Text style={styles.text}>Create a review</Text>
+              </Link>
+            </Pressable>
+          </>
         ) : (
           <Pressable style={{ paddingHorizontal: 10 }}>
             <Link to="/signin">
